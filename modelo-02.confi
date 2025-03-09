@@ -1,0 +1,70 @@
+#App  DEV - techlab
+# arquivo config de exemplo.
+# função de proxy reverso direcionando para um IP
+# Usando 2 ou mais  blocos do servidor.
+
+#Aqui podemos ter diversaas url. Usamos a entrada x.bradesco.com 
+para direfernciar o cainho que carrega o ambiente.
+
+#O server_name dev.bradesco.com está apontando para o ambiente de dev que estar 
+#nocaminho de root /var/www/html. Então quando a URL dev.bradesco.com for digitada no navegador 
+#será carregado o arquivo  index.htm  que estar no caminho /var/www/html. Esse caminho pod ser /var/www/html/app-01 e assim por dianate
+#Caso sua aplicação seja node.js voxcê precisa declarar a extenção logo na primeira linha do conteudo location / {}
+
+#Nas linhas 39 e 40 66 e 67  usamos o mesmo caminho para salavar o log da sduas aplicações, mas você pode separar ou escolher 
+não guarar os lohs comenatando a sduas linhas de logs
+
+
+#Ambiente 01 - DEV
+server {
+        listen 80;
+        listen [::]:80;
+
+        #URL do seu servidor registrada no seu DNS
+        server_name dev.bradesco.com;
+
+        #Caminho do seu arquivo index ou node.js da sua aplicação
+        root /var/www/html;
+
+        location /  {
+        index index.html index.htm index.php;
+        root /var/www/html;
+        try_files $uri $uri/ /index.html;
+        proxy_http_version 1.1;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+
+        }
+
+        access_log /var/log/nginx/www.bradesco.com.access.log;
+        error_log /var/log/nginx/www.www.bradesco.com.error.log;
+}
+
+
+#Ambiente 01 - QA
+server {
+        listen 80;
+        listen [::]:80;
+
+        #URL do seu servidor registrada no seu DNS
+        server_name qa.bradesco.com;;
+
+        #Caminho do seu arquivo index ou node.js da sua aplicação
+        root /var/www/html;
+
+        location /  {
+        index index.html index.htm index.php;
+        root /var/www/html;
+        try_files $uri $uri/ /index.html;
+        proxy_http_version 1.1;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+
+        }
+
+        access_log /var/log/nginx/www.bradesco.com.access.log;
+        error_log /var/log/nginx/www.www.tbradesco.com.error.log;
+}
+
